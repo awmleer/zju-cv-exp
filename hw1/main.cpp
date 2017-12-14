@@ -27,7 +27,6 @@ int main(int argc, char** argv ) {
             break;
         }
         cout << imagePath <<endl;
-        //写入
         Mat imgResized;
         resize(img, imgResized, finalSize);
         putText(imgResized, "3150104785 HaoGuangBo", cvPoint(30,320), FONT_HERSHEY_COMPLEX_SMALL, 1.0, cvScalar(200,200,250), 1, CV_AA);
@@ -45,7 +44,6 @@ int main(int argc, char** argv ) {
     if( !capture.isOpened() ){
         throw "Error when reading avi";
     }
-    namedWindow( "w", 1);
     while(true) {
         capture >> frame;
         if(frame.empty())
