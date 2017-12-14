@@ -6,11 +6,10 @@ using namespace std;
 
 int main(int argc, char** argv ) {
     char image_name[20];
-    string s_image_name;
 
     //initialize video writer
     cv::VideoWriter writer;
-    int isColor = 1;
+    bool isColor = true;
     int frame_fps = 30;
     int frame_width = 640;
     int frame_height = 360;
@@ -25,8 +24,7 @@ int main(int argc, char** argv ) {
     while (i<imageAmount) {
         sprintf(image_name, "%s%d%s", "image", ++i, ".png");
         cout << image_name <<endl;
-        s_image_name = image_name;
-        img = imread(s_image_name);//read images
+        img = imread(image_name);//read images
 
         if (!img.data) {
             throw "Error when reading image file";
@@ -42,6 +40,7 @@ int main(int argc, char** argv ) {
     //handle video
     VideoCapture capture = VideoCapture("1.avi");
     Mat frame,frameResized;
+    cout<<"1.avi"<<endl;
     if( !capture.isOpened() ){
         throw "Error when reading avi";
     }
