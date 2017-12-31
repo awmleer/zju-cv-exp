@@ -9,7 +9,8 @@ char* imagePath;
 int apertureSize;
 double k;
 
-void calculateIxAndIy(Mat imgGray, Mat &ix, Mat &iy);
+void calculateIxAndIy(Mat &imgGray, Mat &ix, Mat &iy);
+void calculateEigenMaxAndEigenMin(Mat &imgGray, Mat &eigenMax, Mat &eigenMin);
 
 int main(int argc, char *argv[]) {
 
@@ -38,13 +39,17 @@ int main(int argc, char *argv[]) {
     imwrite("ix.jpg", ix);
     imwrite("iy.jpg", iy);
 
+    Mat eigenMax=imgGray.clone();
+    Mat eigenMin=imgGray.clone();
+    calculateEigenMaxAndEigenMin(imgGray, eigenMax, eigenMin);
+
     waitKey(0);
 
     return 0;
 }
 
 
-void calculateIxAndIy(const Mat imgGray, Mat &ix, Mat &iy){
+void calculateIxAndIy(const Mat &imgGray, Mat &ix, Mat &iy){
     for(int a=0; a<imgGray.rows; a++){
         for(int b=0; b<imgGray.cols; b++){
             if(a>=apertureSize&&a<imgGray.rows-apertureSize&&b>apertureSize&&b<imgGray.cols-apertureSize){
@@ -64,6 +69,11 @@ void calculateIxAndIy(const Mat imgGray, Mat &ix, Mat &iy){
             }
         }
     }
+}
+
+
+void calculateEigenMaxAndEigenMin(const Mat &imgGray, Mat &eigenMax, Mat &eigenMin){
+
 }
 
 
