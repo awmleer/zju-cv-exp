@@ -13,9 +13,13 @@ Mat imgGray;
 Mat ix,iy;
 Mat eigenMaxImg, eigenMinImg;
 Mat eigenMaxInt, eigenMinInt;
+Mat rImg;
+Mat r;
+Mat rFiltered;
+double maxR=0;
 
 void calculateIxAndIy();
-void calculateEigenMaxAndEigenMin();
+void calculateR();
 
 int main(int argc, char *argv[]) {
 
@@ -47,13 +51,17 @@ int main(int argc, char *argv[]) {
     eigenMinImg=imgGray.clone();
     eigenMaxInt = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
     eigenMinInt = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
-    calculateEigenMaxAndEigenMin();
+    r = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
+    rImg=imgGray.clone();
+    calculateR();
     namedWindow("eigenMax", CV_WINDOW_AUTOSIZE);
     namedWindow("eigenMin", CV_WINDOW_AUTOSIZE);
     imshow("eigenMax", eigenMaxImg);
     imshow("eigenMin", eigenMinImg);
     imwrite("eigenMax.jpg", eigenMaxImg);
     imwrite("eigenMin.jpg", eigenMinImg);
+    imshow("r", rImg);
+    imwrite("r.jpg", rImg);
 
     waitKey(0);
 
@@ -84,7 +92,7 @@ void calculateIxAndIy(){
 }
 
 
-void calculateEigenMaxAndEigenMin(){
+void calculateR(){
     for(int x=0; x<imgGray.rows; x++){
         for(int y=0; y<imgGray.cols; y++){
             if(x>=apertureSize&&x<imgGray.rows-apertureSize&&y>apertureSize&&y<imgGray.cols-apertureSize){
@@ -98,17 +106,32 @@ void calculateEigenMaxAndEigenMin(){
                 Mat evects = Mat(2, 2, CV_64FC1);
                 Mat evalues = Mat(1, 2, CV_64FC1);
                 eigen(m,evalues,evects);
-                eigenMaxImg.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,0)/65536);
-                eigenMaxInt.at<int>(x,y)=evalues.at<int>(0,0);
-                eigenMinImg.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,1)/65536);
-                eigenMinInt.at<int>(x,y)=evalues.at<int>(0,1);
+                int lambda1=evalues.at<int>(0,0);
+                int lambda2=evalues.at<int>(0,1);
+                eigenMaxImg.at<uchar>(x,y)=(uchar)(lambda1/65536);
+                eigenMaxInt.at<int>(x,y)=lambda1;
+                eigenMinImg.at<uchar>(x,y)=(uchar)(lambda2/65536);
+                eigenMinInt.at<int>(x,y)=lambda2;
+                double rVal=lambda1*lambda2 - k*(lambda1+lambda2)*(lambda1+lambda2);
+                if (rVal>10000000){
+                    r.at<double>(x,y)=rVal;
+                    rImg.at<uchar>(x,y)=255;
+                    if(rVal>maxR){
+                        maxR=rVal;
+                    }
+                }else{
+                    r.at<double>(x,y)=0;
+                    rImg.at<uchar>(x,y)=0;
+                }
+//                printf("%d %d %f\n",lambda1, lambda2, rVal);
             }else{
+                r.at<double>(x,y)=0;
+                rImg.at<uchar>(x,y)=0;
                 eigenMaxImg.at<uchar>(x,y)=0;
                 eigenMinImg.at<uchar>(x,y)=0;
             }
         }
     }
 }
-
 
 
