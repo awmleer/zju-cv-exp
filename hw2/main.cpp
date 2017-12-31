@@ -11,7 +11,7 @@ double k;
 
 Mat imgGray;
 Mat ix,iy;
-Mat eigenMax, eigenMin;
+Mat eigenMaxImg, eigenMinImg;
 Mat eigenMaxInt, eigenMinInt;
 
 void calculateIxAndIy();
@@ -43,17 +43,17 @@ int main(int argc, char *argv[]) {
     imwrite("ix.jpg", ix);
     imwrite("iy.jpg", iy);
 
-    eigenMax=imgGray.clone();
-    eigenMin=imgGray.clone();
+    eigenMaxImg=imgGray.clone();
+    eigenMinImg=imgGray.clone();
     eigenMaxInt = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
     eigenMinInt = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
     calculateEigenMaxAndEigenMin();
     namedWindow("eigenMax", CV_WINDOW_AUTOSIZE);
     namedWindow("eigenMin", CV_WINDOW_AUTOSIZE);
-    imshow("eigenMax", ix);
-    imshow("eigenMin", iy);
-    imwrite("eigenMax.jpg", ix);
-    imwrite("eigenMin.jpg", iy);
+    imshow("eigenMax", eigenMaxImg);
+    imshow("eigenMin", eigenMinImg);
+    imwrite("eigenMax.jpg", eigenMaxImg);
+    imwrite("eigenMin.jpg", eigenMinImg);
 
     waitKey(0);
 
@@ -98,13 +98,13 @@ void calculateEigenMaxAndEigenMin(){
                 Mat evects = Mat(2, 2, CV_64FC1);
                 Mat evalues = Mat(1, 2, CV_64FC1);
                 eigen(m,evalues,evects);
-                eigenMax.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,0)/65536);
+                eigenMaxImg.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,0)/65536);
                 eigenMaxInt.at<int>(x,y)=evalues.at<int>(0,0);
-                eigenMin.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,1)/65536);
+                eigenMinImg.at<uchar>(x,y)=(uchar)(evalues.at<int>(0,1)/65536);
                 eigenMinInt.at<int>(x,y)=evalues.at<int>(0,1);
             }else{
-                eigenMax.at<uchar>(x,y)=0;
-                eigenMin.at<uchar>(x,y)=0;
+                eigenMaxImg.at<uchar>(x,y)=0;
+                eigenMinImg.at<uchar>(x,y)=0;
             }
         }
     }
