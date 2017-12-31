@@ -35,9 +35,8 @@ int main(int argc, char *argv[]) {
     namedWindow("iy", CV_WINDOW_AUTOSIZE);
     imshow("ix", ix);
     imshow("iy", iy);
-
-//    Scalar t = imgGray.at<uchar>(Point(20,20));
-//    printf("%f", t.val[0]);
+    imwrite("ix.jpg", ix);
+    imwrite("iy.jpg", iy);
 
     waitKey(0);
 
