@@ -16,10 +16,13 @@ Mat eigenMaxInt, eigenMinInt;
 Mat rImg;
 Mat r;
 Mat rFiltered;
+Mat rFilteredImg;
 double maxR=0;
 
 void calculateIxAndIy();
 void calculateR();
+void filterR();
+
 
 int main(int argc, char *argv[]) {
 
@@ -33,15 +36,12 @@ int main(int argc, char *argv[]) {
 
     imgGray = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    namedWindow("grayscale", CV_WINDOW_AUTOSIZE);
     imshow("grayscale", imgGray);
     imwrite("grayscale.jpg",imgGray);
 
     ix=imgGray.clone();
     iy=imgGray.clone();
     calculateIxAndIy();
-    namedWindow("ix", CV_WINDOW_AUTOSIZE);
-    namedWindow("iy", CV_WINDOW_AUTOSIZE);
     imshow("ix", ix);
     imshow("iy", iy);
     imwrite("ix.jpg", ix);
@@ -54,14 +54,17 @@ int main(int argc, char *argv[]) {
     r = Mat(imgGray.rows, imgGray.cols, CV_64FC1);
     rImg=imgGray.clone();
     calculateR();
-    namedWindow("eigenMax", CV_WINDOW_AUTOSIZE);
-    namedWindow("eigenMin", CV_WINDOW_AUTOSIZE);
     imshow("eigenMax", eigenMaxImg);
     imshow("eigenMin", eigenMinImg);
     imwrite("eigenMax.jpg", eigenMaxImg);
     imwrite("eigenMin.jpg", eigenMinImg);
     imshow("r", rImg);
     imwrite("r.jpg", rImg);
+
+    rFiltered=Mat(imgGray.rows, imgGray.cols, CV_32FC1);
+    rFilteredImg=imgGray.clone();
+    filterR();
+    imshow("rFiltered", rFilteredImg);
 
     waitKey(0);
 
@@ -134,4 +137,16 @@ void calculateR(){
     }
 }
 
-
+void filterR(){
+    for(int x=0; x<imgGray.rows; x++) {
+        for (int y = 0; y < imgGray.cols; y++) {
+            rFiltered.at<int>(x,y)=0;
+            if (x >= apertureSize && x < imgGray.rows - apertureSize && y > apertureSize && y < imgGray.cols - apertureSize) {
+                if(r.at<double>(x,y)>maxR*0.9){
+                    rFiltered.at<int>(x,y)=1;
+                    drawMarker(rFilteredImg, Point(y, x),  Scalar(0, 0, 255), MARKER_CROSS, 8, 1);
+                }
+            }
+        }
+    }
+}
