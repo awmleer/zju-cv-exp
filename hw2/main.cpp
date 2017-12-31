@@ -9,8 +9,12 @@ char* imagePath;
 int apertureSize;
 double k;
 
-void calculateIxAndIy(Mat &imgGray, Mat &ix, Mat &iy);
-void calculateEigenMaxAndEigenMin(Mat &imgGray, Mat &eigenMax, Mat &eigenMin);
+Mat imgGray;
+Mat ix,iy;
+Mat eigenMax, eigenMin;
+
+void calculateIxAndIy();
+void calculateEigenMaxAndEigenMin();
 
 int main(int argc, char *argv[]) {
 
@@ -22,16 +26,15 @@ int main(int argc, char *argv[]) {
     k = atof(argv[2]);
     apertureSize = atoi(argv[3]);
 
-    Mat imgGray;
     imgGray = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
 
     namedWindow("grayscale", CV_WINDOW_AUTOSIZE);
     imshow("grayscale", imgGray);
     imwrite("grayscale.jpg",imgGray);
 
-    Mat ix=imgGray.clone();
-    Mat iy=imgGray.clone();
-    calculateIxAndIy(imgGray, ix, iy);
+    ix=imgGray.clone();
+    iy=imgGray.clone();
+    calculateIxAndIy();
     namedWindow("ix", CV_WINDOW_AUTOSIZE);
     namedWindow("iy", CV_WINDOW_AUTOSIZE);
     imshow("ix", ix);
@@ -39,9 +42,9 @@ int main(int argc, char *argv[]) {
     imwrite("ix.jpg", ix);
     imwrite("iy.jpg", iy);
 
-    Mat eigenMax=imgGray.clone();
-    Mat eigenMin=imgGray.clone();
-    calculateEigenMaxAndEigenMin(imgGray, eigenMax, eigenMin);
+    eigenMax=imgGray.clone();
+    eigenMin=imgGray.clone();
+    calculateEigenMaxAndEigenMin();
 
     waitKey(0);
 
@@ -49,7 +52,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-void calculateIxAndIy(const Mat &imgGray, Mat &ix, Mat &iy){
+void calculateIxAndIy(){
     for(int a=0; a<imgGray.rows; a++){
         for(int b=0; b<imgGray.cols; b++){
             if(a>=apertureSize&&a<imgGray.rows-apertureSize&&b>apertureSize&&b<imgGray.cols-apertureSize){
@@ -72,7 +75,7 @@ void calculateIxAndIy(const Mat &imgGray, Mat &ix, Mat &iy){
 }
 
 
-void calculateEigenMaxAndEigenMin(const Mat &imgGray, Mat &eigenMax, Mat &eigenMin){
+void calculateEigenMaxAndEigenMin(){
 
 }
 
