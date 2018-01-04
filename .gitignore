@@ -1,5 +1,5 @@
 .idea/
-
+.vscode/
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
