@@ -69,11 +69,11 @@ void calcEigens(){
     imshow("mean",meanImg);
     eigen(covarMat,eigenValues,eigenVectors);
     cout<<eigenVectors.rows<<" "<<eigenVectors.cols<<endl;
-    Mat t = Mat(standardSize.height, standardSize.width, CV_64F);
-    Mat tt = Mat(standardSize.height, standardSize.width, CV_8UC1);
 //    eigenValues.row(4).reshape(0,25).convertTo(t, CV_8UC1);
 //    cout<<eigenVectors.type()<<endl;
     for(int i=0; i<10; i++){
+        Mat t = Mat(standardSize.height, standardSize.width, CV_64F);
+        Mat tt = Mat(standardSize.height, standardSize.width, CV_8UC1);
         for(int j=0; j<standardSize.width*standardSize.height; j++){
             t.at<double>(j/standardSize.width,j%standardSize.width)=eigenVectors.at<double>(i,j);
 //        cout<<j<<" "<<eigenVectors.at<double>(1,j)<<endl;
