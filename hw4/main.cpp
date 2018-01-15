@@ -120,17 +120,17 @@ void recognize(){
     double minDistance = -1;
     Face* resultFace;
     cout<<testCoordinates.rows<<"*"<<testCoordinates.cols<<endl;
-    // for(int i=0; i<allFaces.size(); i++){
     for(vector<Face*>::iterator iter=allFaces.begin(); iter!=allFaces.end(); iter++){
         // Face* face = allFaces.at(i);
         double distance;
         Face* face = *iter;
         // matmul(face->img.reshape(0,1), A, face->coordinates);
-        Mat doubleMat = Mat(1, standardSize.height*standardSize.width, CV_64F);
-        for(int j=0; j<standardSize.width*standardSize.height; j++){
-            doubleMat.at<double>(0,j)=face->img.at<uchar>(j/standardSize.width,j%standardSize.width);
-        }
-        // face->img.reshape(0,1).convertTo(doubleMat, CV_64F);
+        // Mat doubleMat = Mat(1, standardSize.height*standardSize.width, CV_64F);
+        // for(int j=0; j<standardSize.width*standardSize.height; j++){
+        //     doubleMat.at<double>(0,j)=face->img.at<uchar>(j/standardSize.width,j%standardSize.width);
+        // }
+        Mat doubleMat;
+        face->img.reshape(0,1).convertTo(doubleMat, CV_64F);
         face->coordinates = doubleMat * A;
         distance = 0;
         for(int i=0; i<eigenCount; i++){
