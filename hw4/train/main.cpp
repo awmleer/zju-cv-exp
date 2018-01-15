@@ -34,12 +34,17 @@ Mat eigenValues = Mat();
 vector<Mat> eigenFaces;
 Mat AT = Mat(10,standardSize.height*standardSize.width,CV_64F);
 Mat A = Mat(standardSize.height*standardSize.width,10,CV_64F);
+float energyPercent;
+String modelFileName;
+int eigenCount;
 
 void readFaces();
 void calcEigens();
 void recognize();
 
-int main() {
+int main(int argc, char* argv[]) {
+    energyPercent = atof(argv[1]);
+    modelFileName = String(argv[2]);
     readFaces();
     calcEigens();
 //    std::cout << "Hello, World!" << std::endl;
@@ -73,7 +78,9 @@ void calcEigens(){
 //    cout<<eigenVectors.rows<<" "<<eigenVectors.cols<<endl;
 //    eigenValues.row(4).reshape(0,25).convertTo(t, CV_8UC1);
 //    cout<<eigenVectors.type()<<endl;
-    for(int i=0; i<10; i++){
+    eigenCount = eigenVectors.rows*energyPercent;
+    cout<<"eigen count: "<<eigenCount<<endl;
+    for(int i=0; i<eigenCount; i++){
         Mat t = Mat(standardSize.height, standardSize.width, CV_64F);
         Mat tt = Mat(standardSize.height, standardSize.width, CV_8UC1);
         for(int j=0; j<standardSize.width*standardSize.height; j++){
