@@ -1,4 +1,6 @@
 .idea/
+bin/
+*.cbp
 .vscode/
 CMakeCache.txt
 CMakeFiles

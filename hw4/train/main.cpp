@@ -32,6 +32,8 @@ Mat meanMat = Mat();
 Mat eigenVectors = Mat();
 Mat eigenValues = Mat();
 vector<Mat> eigenFaces;
+Mat AT = Mat(10,standardSize.height*standardSize.width,CV_64F);
+Mat A = Mat(standardSize.height*standardSize.width,10,CV_64F);
 
 void readFaces();
 void calcEigens();
@@ -68,7 +70,7 @@ void calcEigens(){
     meanMat.convertTo(meanImg, CV_8UC1);
     imshow("mean",meanImg);
     eigen(covarMat,eigenValues,eigenVectors);
-    cout<<eigenVectors.rows<<" "<<eigenVectors.cols<<endl;
+//    cout<<eigenVectors.rows<<" "<<eigenVectors.cols<<endl;
 //    eigenValues.row(4).reshape(0,25).convertTo(t, CV_8UC1);
 //    cout<<eigenVectors.type()<<endl;
     for(int i=0; i<10; i++){
@@ -76,6 +78,8 @@ void calcEigens(){
         Mat tt = Mat(standardSize.height, standardSize.width, CV_8UC1);
         for(int j=0; j<standardSize.width*standardSize.height; j++){
             t.at<double>(j/standardSize.width,j%standardSize.width)=eigenVectors.at<double>(i,j);
+            AT.at<double>(i,j)=eigenVectors.at<double>(i,j);
+            A.at<double>(j,i)=eigenVectors.at<double>(i,j);
 //        cout<<j<<" "<<eigenVectors.at<double>(1,j)<<endl;
         }
         normalize(t,t,255,0,NORM_MINMAX);
