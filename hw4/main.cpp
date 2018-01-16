@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 }
 
 void readFaces(){
-    for(int i=1; i<=15; i++){
+    for(int i=1; i<=16; i++){
         Person* person = new Person(i);
         persons.push_back(person);
         for(int j=1; j<=10; j++){
@@ -79,14 +79,10 @@ void readFaces(){
 
 void calcEigens(){
     calcCovarMatrix(allFaceMats,covarMat,meanMat,COVAR_NORMAL);
-//    imshow("covariance",covarMat);
     Mat meanImg;
     meanMat.convertTo(meanImg, CV_8UC1);
     imshow("mean",meanImg);
     eigen(covarMat,eigenValues,eigenVectors);
-//    cout<<eigenVectors.rows<<" "<<eigenVectors.cols<<endl;
-//    eigenValues.row(4).reshape(0,25).convertTo(t, CV_8UC1);
-//    cout<<eigenVectors.type()<<endl;
     eigenCount = eigenVectors.rows*energyPercent;
     cout<<"eigen count: "<<eigenCount<<endl;
     AT = Mat(eigenCount, standardSize.height*standardSize.width, CV_64F);
@@ -98,7 +94,6 @@ void calcEigens(){
             t.at<double>(j/standardSize.width,j%standardSize.width)=eigenVectors.at<double>(i,j);
             AT.at<double>(i,j)=eigenVectors.at<double>(i,j);
             A.at<double>(j,i)=eigenVectors.at<double>(i,j);
-//        cout<<j<<" "<<eigenVectors.at<double>(1,j)<<endl;
         }
         normalize(t,t,255,0,NORM_MINMAX);
         t.convertTo(tt,CV_8UC1);
@@ -110,8 +105,6 @@ void calcEigens(){
 }
 
 void recognize(){
-    // Mat testCoordinates;
-    // matmul(testImg.reshape(0,1), A, testCoordinates);
     cout<<testImg.reshape(0,1).rows<<"*"<<testImg.reshape(0,1).cols<<endl;
     cout<<A.rows<<"*"<<A.cols<<endl;
     Mat testDoubleMat;
@@ -121,14 +114,8 @@ void recognize(){
     Face* resultFace;
     cout<<testCoordinates.rows<<"*"<<testCoordinates.cols<<endl;
     for(vector<Face*>::iterator iter=allFaces.begin(); iter!=allFaces.end(); iter++){
-        // Face* face = allFaces.at(i);
         double distance;
         Face* face = *iter;
-        // matmul(face->img.reshape(0,1), A, face->coordinates);
-        // Mat doubleMat = Mat(1, standardSize.height*standardSize.width, CV_64F);
-        // for(int j=0; j<standardSize.width*standardSize.height; j++){
-        //     doubleMat.at<double>(0,j)=face->img.at<uchar>(j/standardSize.width,j%standardSize.width);
-        // }
         Mat doubleMat;
         face->img.reshape(0,1).convertTo(doubleMat, CV_64F);
         face->coordinates = doubleMat * A;
@@ -143,5 +130,9 @@ void recognize(){
         }
     }
     cout<<"result:\n"<<"person"<<resultFace->person->id<<" img"<<resultFace->id<<endl;
-    imshow("result face", resultFace->img);
+    imshow("most similar face", resultFace->img);
+    Mat colorfulTestImg;
+    cvtColor(testImg, colorfulTestImg, COLOR_GRAY2BGR);
+    putText(colorfulTestImg, to_string(resultFace->person->id), cvPoint(2,20), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1, CV_AA);
+    imshow("test image", colorfulTestImg);
 }
